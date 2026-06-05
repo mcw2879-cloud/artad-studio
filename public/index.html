@@ -310,6 +310,49 @@ function setStep(txt,pct){
   else pw.classList.add("hidden");
 }
 
+function processImageCanvas(sourceBlob, fmt, params) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const url = URL.createObjectURL(sourceBlob);
+    img.onload = () => {
+      const { w, h } = fmt;
+      const cv = document.createElement("canvas");
+      cv.width = w; cv.height = h;
+      const ctx = cv.getContext("2d");
+      const cg = params.colorGrade || {};
+      const sc = Math.max(w/img.naturalWidth, h/img.naturalHeight);
+      const sw = img.naturalWidth*sc, sh = img.naturalHeight*sc;
+      const fx = params.crop?.focusX ?? 0.5;
+      const fy = params.crop?.focusY ?? 0.38;
+      // Colour grade
+      ctx.filter = `brightness(${100+(cg.brightness||0)}%) contrast(${100+(cg.contrast||0)}%) saturate(${100+(cg.saturation||0)}%)`;
+      ctx.drawImage(img, -((sw-w)*fx), -((sh-h)*fy), sw, sh);
+      ctx.filter = "none";
+      URL.revokeObjectURL(url);
+      // Warmth
+      const wm = cg.warmth||0;
+      if (wm>0) { ctx.globalAlpha=wm/110; ctx.globalCompositeOperation="soft-light"; ctx.fillStyle="#ff8800"; ctx.fillRect(0,0,w,h); ctx.globalAlpha=1; ctx.globalCompositeOperation="source-over"; }
+      // Gradient overlay
+      const oa = params.overlay?.opacity||0.52;
+      const g = ctx.createLinearGradient(0,h*0.45,0,h);
+      g.addColorStop(0,"rgba(0,0,0,0)"); g.addColorStop(1,`rgba(0,0,0,${oa})`);
+      ctx.fillStyle=g; ctx.fillRect(0,0,w,h);
+      // Text
+      const pad=Math.round(w*0.07), hfs=Math.round(w*0.062), sfs=Math.round(hfs*0.52), ufs=Math.round(w*0.028);
+      const headY=h-pad-ufs-16-sfs-14-hfs, subY=h-pad-ufs-16-sfs, urlY=h-pad;
+      const ff="Georgia,'Times New Roman',serif";
+      ctx.shadowColor="rgba(0,0,0,0.75)"; ctx.shadowBlur=14; ctx.shadowOffsetY=2;
+      if (params.headline?.text) { ctx.font=`500 ${hfs}px ${ff}`; ctx.fillStyle=params.headline.color||"#fff"; ctx.fillText(params.headline.text,pad,headY); }
+      if (params.subtext?.show!==false&&params.subtext?.text) { ctx.font=`400 ${sfs}px ${ff}`; ctx.fillStyle=params.subtext.color||"#f5e6c8"; ctx.fillText(params.subtext.text,pad,subY); }
+      ctx.font=`400 ${ufs}px Helvetica Neue,Arial,sans-serif`; ctx.fillStyle="rgba(255,255,255,0.65)"; ctx.fillText("martamescar.com",pad,urlY);
+      ctx.shadowBlur=0; ctx.shadowColor="transparent";
+      cv.toBlob(blob => blob ? resolve(blob) : reject(new Error("Canvas export failed")), "image/jpeg", 0.93);
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error("Image load failed")); };
+    img.src = url;
+  });
+}
+
 async function generate(){
   if(!S.file) return;
   setStage("working"); showErr(""); showErr2("");
@@ -328,13 +371,7 @@ async function generate(){
     S.result=await r1.json();
 
     setStep("Applying AI edits to image creative...");
-    const fd2=new FormData();
-    fd2.append("image",frameBlob,"image.jpg");
-    fd2.append("params",JSON.stringify(S.result));
-    fd2.append("format",JSON.stringify(S.fmt));
-    const r2=await fetch("/api/process-image",{method:"POST",body:fd2});
-    if(!r2.ok) throw new Error("Image processing failed");
-    S.imageBlob=await r2.blob();
+    S.imageBlob = await processImageCanvas(frameBlob, S.fmt, S.result);
 
     if(S.isVideo){
       setStep("Processing video with FFmpeg...",0);
@@ -348,7 +385,7 @@ async function generate(){
         xhr.responseType="blob";
         xhr.upload.onprogress=e=>{ if(e.lengthComputable) setStep("Uploading video...",Math.round(e.loaded/e.total*50)); };
         xhr.onprogress=()=>setStep("Processing with FFmpeg — colour grade, warmth, overlays, fades...",75);
-        xhr.onload=()=>{ if(xhr.status===200) res(xhr.response); else rej(new Error("Video processing failed")); };
+        xhr.onload=()=>{ if(xhr.status===200) res(xhr.response); else { xhr.responseType="text"; rej(new Error("Video processing failed — check Railway logs")); } };
         xhr.onerror=()=>rej(new Error("Network error"));
         xhr.send(fd3);
       });
