@@ -129,28 +129,43 @@ function buildFilters(params, fmt, duration, isVideo) {
   const hookText = safeText(params.hook?.text||"");
   const headText = safeText(params.headline?.text||"");
   const subText  = safeText(params.subtext?.text||"");
-  const endText  = safeText(params.video?.endCardText||"Shop the original at martamescar.com");
+  const endText  = safeText(params.video?.endCardText||"Shop at martamescar.com");
   const vid = params.video||{};
   const hookEnd  = vid.hookEndTime||3.2;
   const tFadeIn  = vid.textFadeInTime||0.5;
   const endOff   = vid.endCardStartOffset||3.5;
   const endStart = Math.max(0,(duration||30)-endOff);
   const oa = params.overlay?.opacity||0.52;
+  const gradY = Math.round(h*0.50);
 
   const f = [
+    // 1. Resize to Meta format
     `scale=${w}:${h}:force_original_aspect_ratio=decrease`,
     `pad=${w}:${h}:(ow-iw)/2:(oh-ih)/2:black`,
+    // 2. Colour grade
     `eq=brightness=${br}:contrast=${con}:saturation=${sat}`,
-    ...(wm>0?[`curves=r='0/0 0.5/${(0.5+wm/500).toFixed(3)} 1/1':b='0/0 0.5/${(0.5-wm/600).toFixed(3)} 1/${(1-wm/300).toFixed(3)}'`]:[]),
-    `vignette=PI/5`,
-    `geq=r='r(X\\,Y)':g='g(X\\,Y)':b='b(X\\,Y)':a='255*if(gt(Y\\,${Math.round(h*0.42)})\\,${oa}+${(1-oa).toFixed(3)}*(1-(Y-${Math.round(h*0.42)})/${Math.round(h*0.58)}.0)\\,1)'`,
+    // 3. Warmth via colorchannelmixer (no quoting issues)
+    ...(wm>0 ? [`colorchannelmixer=rr=${(1+wm/180).toFixed(3)}:bb=${(1-wm/220).toFixed(3)}`] : []),
+    // 4. Gradient overlay via drawbox (works on JPEG, no alpha needed)
+    `drawbox=x=0:y=${gradY}:w=iw:h=${h-gradY}:color=black@${oa.toFixed(2)}:t=fill`,
   ];
 
-  if (hookText&&isVideo) f.push(`drawtext=text='${hookText}':fontsize=${hookFs}:fontcolor=white:x=(w-text_w)/2:y=h*0.35:shadowcolor=black@0.85:shadowx=3:shadowy=3:enable='between(t\\,0\\,${hookEnd})'`);
-  if (headText) f.push(`drawtext=text='${headText}':fontsize=${headFs}:fontcolor=white:x=${pad}:y=${headY}:shadowcolor=black@0.75:shadowx=2:shadowy=2${isVideo?`:enable='gt(t\\,${tFadeIn})'`:""}`);
-  if (subText&&params.subtext?.show!==false) f.push(`drawtext=text='${subText}':fontsize=${subFs}:fontcolor=#f5e6c8:x=${pad}:y=${subY}:shadowcolor=black@0.65:shadowx=1:shadowy=1${isVideo?`:enable='gt(t\\,${tFadeIn})'`:""}`);
+  // 5. Text overlays
+  if (hookText&&isVideo) {
+    f.push(`drawtext=text='${hookText}':fontsize=${hookFs}:fontcolor=white:x=(w-text_w)/2:y=${Math.round(h*0.35)}:shadowcolor=black@0.85:shadowx=3:shadowy=3:enable='between(t\\,0\\,${hookEnd})'`);
+  }
+  if (headText) {
+    const en = isVideo ? `:enable='gt(t\\,${tFadeIn})'` : "";
+    f.push(`drawtext=text='${headText}':fontsize=${headFs}:fontcolor=white:x=${pad}:y=${headY}:shadowcolor=black@0.75:shadowx=2:shadowy=2${en}`);
+  }
+  if (subText&&params.subtext?.show!==false) {
+    const en = isVideo ? `:enable='gt(t\\,${tFadeIn})'` : "";
+    f.push(`drawtext=text='${subText}':fontsize=${subFs}:fontcolor=#f5e6c8:x=${pad}:y=${subY}:shadowcolor=black@0.65:shadowx=1:shadowy=1${en}`);
+  }
   f.push(`drawtext=text='martamescar.com':fontsize=${urlFs}:fontcolor=white@0.65:x=${pad}:y=${urlY}:shadowcolor=black@0.5:shadowx=1:shadowy=1`);
-  if (isVideo&&endText&&duration>endOff) f.push(`drawtext=text='${endText}':fontsize=${endFs}:fontcolor=white:x=(w-text_w)/2:y=(h-text_h)/2:shadowcolor=black@0.9:shadowx=3:shadowy=3:enable='gte(t\\,${endStart})'`);
+  if (isVideo&&endText&&duration>endOff) {
+    f.push(`drawtext=text='${endText}':fontsize=${endFs}:fontcolor=white:x=(w-text_w)/2:y=(h-text_h)/2:shadowcolor=black@0.9:shadowx=3:shadowy=3:enable='gte(t\\,${endStart})'`);
+  }
 
   return f.join(",");
 }
