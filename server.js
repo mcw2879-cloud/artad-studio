@@ -216,32 +216,7 @@ app.post("/api/process-video", upload.single("video"), (req, res) => {
   });
 });
 
-app.post("/api/process-image", upload.single("image"), (req, res) => {
-  const imgFile = req.file;
-  if (!imgFile) return res.status(400).json({ error: "No image provided" });
-  let params, fmt;
-  try { params=JSON.parse(req.body.params); fmt=JSON.parse(req.body.format); }
-  catch(e) { return res.status(400).json({ error:"Invalid params" }); }
-
-  const outputPath = `outputs/edited_${Date.now()}.jpg`;
-  const filters = buildFilters(params, fmt, 0, false);
-
-  ffmpeg(imgFile.path)
-    .videoFilters(filters)
-    .frames(1)
-    .output(outputPath)
-    .on("end",()=>{
-      res.download(outputPath,"martamescar_ad.jpg",()=>{
-        try{fs.unlinkSync(imgFile.path);}catch{}
-        try{fs.unlinkSync(outputPath);}catch{}
-      });
-    })
-    .on("error",err=>{
-      try{fs.unlinkSync(imgFile.path);}catch{}
-      res.status(500).json({error:err.message});
-    })
-    .run();
-});
+// Image processing is handled client-side via Canvas API
 
 app.get("*",(req,res)=>res.sendFile(path.join(__dirname,"public","index.html")));
 app.listen(PORT,()=>console.log(`ArtAd Studio on port ${PORT}`));
