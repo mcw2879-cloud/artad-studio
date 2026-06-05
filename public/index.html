@@ -1,172 +1,238 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>ArtAd Studio — Marta Mescar</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:#0a090e;color:#e8e4f0;font-family:'Palatino Linotype',Palatino,Georgia,serif;min-height:100vh}
-.header{background:#111018;border-bottom:1px solid #1e1c28;padding:14px 24px;display:flex;align-items:center;justify-content:space-between}
-.header-title{font-size:16px;font-weight:700;color:#c9a96e}
-.header-sub{font-size:9px;color:#6b6480;letter-spacing:0.3em;font-family:monospace;margin-bottom:3px}
-.body{padding:24px;max-width:1100px;margin:0 auto}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
-.card{background:#111018;border:1px solid #1e1c28;border-radius:10px;padding:16px;margin-bottom:14px}
-.lbl{font-size:10px;color:#6b6480;letter-spacing:0.15em;font-family:monospace;margin-bottom:8px;display:block}
-.drop-zone{border:2px dashed #1e1c28;border-radius:12px;min-height:220px;display:flex;align-items:center;justify-content:center;cursor:pointer;margin-bottom:10px;overflow:hidden;transition:border-color 0.2s;background:#1a1825}
-.drop-zone:hover{border-color:#c9a96e}
-.drop-zone.has-file{border-color:#c9a96e}
-.drop-zone video,.drop-zone img{width:100%;display:block;max-height:320px;object-fit:contain}
-.drop-placeholder{text-align:center;padding:32px}
-.drop-placeholder .icon{font-size:36px;margin-bottom:10px}
-.drop-placeholder p{color:#6b6480;font-size:14px}
-.drop-placeholder small{color:#333;font-size:11px;margin-top:5px;display:block}
-input[type=file]{display:none}
-button{cursor:pointer;transition:all 0.15s;font-family:monospace}
-.btn-primary{width:100%;padding:13px;background:#c9a96e;color:#000;border:none;border-radius:8px;font-size:14px;font-weight:700;letter-spacing:0.04em}
-.btn-primary:disabled{background:#1a1825;color:#6b6480;cursor:not-allowed}
-.btn-ghost{width:100%;padding:9px;background:transparent;color:#6b6480;border:1px solid #1e1c28;border-radius:8px;font-size:12px}
-.btn-capture{width:100%;padding:11px;background:#1a1825;border:1px solid #1e1c28;color:#e8e4f0;border-radius:7px;font-size:13px;font-weight:600}
-.btn-capture.captured{background:rgba(74,222,128,0.1);border-color:#4ade80;color:#4ade80}
-.fmt-row{display:flex;gap:6px;flex-wrap:wrap}
-.fmt-btn{padding:5px 12px;border-radius:20px;border:1px solid #1e1c28;background:transparent;color:#6b6480;font-size:11px}
-.fmt-btn.active{border-color:#c9a96e;background:rgba(201,169,110,0.1);color:#c9a96e}
-.obj-row{display:flex;gap:8px}
-.obj-btn{flex:1;padding:9px 6px;border-radius:8px;border:1px solid #1e1c28;background:transparent;color:#6b6480;font-size:11px;text-align:center}
-.obj-btn.active{border-color:#c9a96e;background:rgba(201,169,110,0.1);color:#c9a96e}
-textarea,input[type=text]{width:100%;background:#1a1825;border:1px solid #1e1c28;border-radius:6px;color:#e8e4f0;padding:9px 12px;font-size:13px;font-family:Georgia,serif;resize:vertical;outline:none;line-height:1.6}
+body{background:#f5f4f0;color:#1a1a1a;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh;font-size:14px}
+
+/* Header */
+.header{background:#fff;border-bottom:1px solid #e0ddd6;padding:14px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10;box-shadow:0 1px 4px rgba(0,0,0,0.06)}
+.logo-sub{font-size:9px;color:#999;letter-spacing:0.25em;text-transform:uppercase;margin-bottom:2px}
+.logo{font-size:17px;font-weight:700;color:#c9a050;font-family:Georgia,serif;letter-spacing:0.02em}
+.logo span{color:#999;font-weight:400;font-size:13px}
+
+/* Layout */
+.body{padding:28px;max-width:1140px;margin:0 auto}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.two-col-stat{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+
+/* Cards */
+.card{background:#fff;border:1px solid #e8e5de;border-radius:12px;padding:18px;margin-bottom:14px;box-shadow:0 1px 3px rgba(0,0,0,0.04)}
+.section-label{font-size:10px;font-weight:600;color:#aaa;letter-spacing:0.18em;text-transform:uppercase;margin-bottom:10px;display:block}
+
+/* Drop zone */
+.drop-zone{border:2px dashed #d8d4cc;border-radius:12px;min-height:240px;display:flex;align-items:center;justify-content:center;cursor:pointer;margin-bottom:12px;overflow:hidden;transition:all 0.2s;background:#faf9f7;position:relative}
+.drop-zone:hover,.drop-zone.drag{border-color:#c9a050;background:#fdf8ef}
+.drop-zone.has-file{border-color:#c9a050;border-style:solid}
+.drop-zone video,.drop-zone img{width:100%;display:block;max-height:340px;object-fit:contain}
+.drop-placeholder{text-align:center;padding:40px 24px;pointer-events:none}
+.drop-icon{font-size:40px;margin-bottom:12px;opacity:0.4}
+.drop-placeholder p{color:#888;font-size:14px;margin-bottom:4px}
+.drop-placeholder small{color:#bbb;font-size:12px}
+
+/* Buttons */
+.btn{cursor:pointer;border:none;transition:all 0.15s;font-family:inherit;display:inline-flex;align-items:center;justify-content:center;gap:6px;font-weight:500;border-radius:8px}
+.btn-primary{background:#c9a050;color:#fff;padding:13px 20px;font-size:14px;width:100%;letter-spacing:0.02em}
+.btn-primary:hover{background:#b8903f}
+.btn-primary:disabled{background:#e0ddd6;color:#aaa;cursor:not-allowed}
+.btn-ghost{background:transparent;color:#888;border:1px solid #e0ddd6;padding:8px 16px;font-size:12px;width:100%;margin-bottom:8px}
+.btn-ghost:hover{background:#f5f4f0;color:#555}
+.btn-sm{padding:6px 14px;font-size:12px;background:transparent;border:1px solid #e0ddd6;color:#666;border-radius:6px;cursor:pointer;font-family:inherit}
+.btn-sm:hover{background:#f5f4f0}
+.btn-capture{width:100%;padding:12px;background:#fff;border:1.5px solid #e0ddd6;color:#333;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:all 0.15s}
+.btn-capture:hover{border-color:#c9a050;color:#c9a050}
+.btn-capture.captured{background:#f0fdf4;border-color:#22c55e;color:#16a34a}
+.btn-download-video{display:block;width:100%;padding:13px;background:#22c55e;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;text-align:center;text-decoration:none;margin-bottom:8px;cursor:pointer;font-family:inherit;letter-spacing:0.02em;transition:all 0.15s}
+.btn-download-video:hover{background:#16a34a}
+.btn-download-image{width:100%;padding:13px;background:#c9a050;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;margin-bottom:8px;cursor:pointer;font-family:inherit;letter-spacing:0.02em;transition:all 0.15s}
+.btn-download-image:hover{background:#b8903f}
+
+/* Format / Objective pills */
+.pill-row{display:flex;gap:6px;flex-wrap:wrap}
+.pill{padding:5px 14px;border-radius:20px;border:1.5px solid #e0ddd6;background:#fff;color:#888;font-size:12px;cursor:pointer;font-family:inherit;transition:all 0.15s;font-weight:500}
+.pill:hover{border-color:#c9a050;color:#c9a050}
+.pill.active{border-color:#c9a050;background:#fdf8ef;color:#c9a050}
+.obj-btn{flex:1;padding:10px 8px;border-radius:10px;border:1.5px solid #e0ddd6;background:#fff;color:#888;font-size:12px;text-align:center;cursor:pointer;font-family:inherit;transition:all 0.15s;font-weight:500}
+.obj-btn:hover{border-color:#c9a050;color:#c9a050}
+.obj-btn.active{border-color:#c9a050;background:#fdf8ef;color:#c9a050}
+.obj-icon{font-size:20px;margin-bottom:4px;display:block}
+
+/* Form fields */
+textarea,input[type=text]{width:100%;background:#faf9f7;border:1.5px solid #e0ddd6;border-radius:8px;color:#1a1a1a;padding:10px 13px;font-size:13px;font-family:Georgia,serif;resize:vertical;outline:none;line-height:1.7;transition:border-color 0.15s}
+textarea:focus,input[type=text]:focus{border-color:#c9a050;background:#fff}
+
+/* Loading */
 .spinner-wrap{text-align:center;padding:80px 20px}
-.spinner{width:44px;height:44px;border:3px solid #1a1825;border-top-color:#c9a96e;border-radius:50%;animation:spin 0.9s linear infinite;margin:0 auto 22px}
+.spinner{width:44px;height:44px;border:3px solid #e8e5de;border-top-color:#c9a050;border-radius:50%;animation:spin 0.9s linear infinite;margin:0 auto 24px}
 @keyframes spin{to{transform:rotate(360deg)}}
-.step-text{font-size:14px;color:#e8e4f0;margin-bottom:8px}
-.step-sub{font-size:11px;color:#6b6480}
-.progress-bar-wrap{max-width:360px;margin:12px auto}
-.progress-track{background:#1a1825;border-radius:20px;height:5px;overflow:hidden}
-.progress-fill{height:100%;background:#c9a96e;border-radius:20px;transition:width 0.3s}
-.result-grid{display:grid;grid-template-columns:300px 1fr;gap:24px}
+.step-text{font-size:15px;color:#1a1a1a;margin-bottom:6px;font-weight:500}
+.step-sub{font-size:12px;color:#aaa}
+.progress-wrap{max-width:380px;margin:16px auto 0}
+.progress-track{background:#e8e5de;border-radius:20px;height:5px;overflow:hidden}
+.progress-fill{height:100%;background:#c9a050;border-radius:20px;transition:width 0.3s}
+.progress-pct{font-size:11px;color:#c9a050;font-family:monospace;margin-top:6px}
+
+/* Result */
+.result-grid{display:grid;grid-template-columns:320px 1fr;gap:28px}
 .output-toggle{display:flex;gap:6px;margin-bottom:10px}
-.toggle-btn{flex:1;padding:8px;border-radius:7px;border:1px solid #1e1c28;background:transparent;color:#6b6480;font-size:11px}
-.toggle-btn.active-video{border-color:#4ade80;background:rgba(74,222,128,0.1);color:#4ade80}
-.toggle-btn.active-image{border-color:#c9a96e;background:rgba(201,169,110,0.1);color:#c9a96e}
-.output-preview{border-radius:10px;overflow:hidden;border:1px solid #1e1c28;margin-bottom:10px;background:#1a1825}
+.tog-btn{flex:1;padding:9px;border-radius:8px;border:1.5px solid #e0ddd6;background:#fff;color:#888;font-size:12px;cursor:pointer;font-family:inherit;font-weight:500;transition:all 0.15s}
+.tog-btn.tv{border-color:#22c55e;background:#f0fdf4;color:#16a34a}
+.tog-btn.ti{border-color:#c9a050;background:#fdf8ef;color:#c9a050}
+.output-preview{border-radius:12px;overflow:hidden;border:1px solid #e8e5de;margin-bottom:10px;background:#f5f4f0}
 .output-preview video,.output-preview img{width:100%;display:block}
-.btn-download-video{width:100%;padding:12px;background:#4ade80;color:#000;border:none;border-radius:8px;font-size:13px;font-weight:700;letter-spacing:0.06em;margin-bottom:8px;display:block;text-align:center;text-decoration:none}
-.btn-download-image{width:100%;padding:12px;background:#c9a96e;color:#000;border:none;border-radius:8px;font-size:13px;font-weight:700;letter-spacing:0.06em;margin-bottom:8px}
-.tabs{display:flex;gap:1px;border-bottom:1px solid #1e1c28;margin-bottom:16px;flex-wrap:wrap}
-.tab-btn{padding:8px 14px;background:transparent;border:none;border-bottom:2px solid transparent;color:#6b6480;cursor:pointer;font-size:12px;font-family:monospace;letter-spacing:0.06em}
-.tab-btn.active{border-bottom-color:#c9a96e;color:#c9a96e}
-.stat-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px}
-.stat-box{background:#1a1825;border-radius:7px;padding:9px 12px}
-.stat-label{font-size:9px;color:#6b6480;font-family:monospace;letter-spacing:0.1em;margin-bottom:3px}
-.stat-value{font-size:12px;color:#e8e4f0;font-family:monospace;line-height:1.4}
-.copy-field{margin-bottom:12px}
+
+/* Tabs */
+.tabs{display:flex;gap:0;border-bottom:2px solid #e8e5de;margin-bottom:20px}
+.tab-btn{padding:9px 16px;background:transparent;border:none;border-bottom:2.5px solid transparent;color:#aaa;cursor:pointer;font-size:13px;font-family:inherit;font-weight:500;margin-bottom:-2px;transition:all 0.15s}
+.tab-btn:hover{color:#555}
+.tab-btn.active{border-bottom-color:#c9a050;color:#c9a050}
+
+/* Stat boxes */
+.stat-box{background:#faf9f7;border-radius:8px;padding:10px 12px;border:1px solid #e8e5de}
+.stat-label{font-size:9px;font-weight:600;color:#aaa;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:3px}
+.stat-value{font-size:13px;color:#1a1a1a;font-family:monospace}
+
+/* Copy fields */
+.copy-field{margin-bottom:14px}
 .copy-row{display:flex;gap:8px;align-items:flex-start}
-.copy-value{flex:1;font-size:13px;color:#e8e4f0;line-height:1.7;background:#1a1825;border-radius:6px;padding:9px 12px}
-.copy-btn{background:transparent;border:1px solid #1e1c28;color:#6b6480;border-radius:6px;padding:7px 11px;font-size:11px;flex-shrink:0;min-width:36px}
-.copy-btn.copied{color:#4ade80;border-color:#4ade80}
-.tag{display:inline-block;padding:3px 9px;border-radius:20px;font-size:11px;background:rgba(201,169,110,0.1);border:1px solid rgba(201,169,110,0.3);color:#c9a96e;margin:2px 3px 2px 0;font-family:monospace}
-.insight-box{border-radius:10px;padding:14px;margin-bottom:12px}
-.insight-blue{background:rgba(96,165,250,0.08);border:1px solid rgba(96,165,250,0.25)}
-.insight-gold{background:rgba(201,169,110,0.08);border:1px solid rgba(201,169,110,0.2)}
-.insight-dark{background:#111018;border:1px solid #1e1c28}
-.action-row{display:flex;gap:10px;margin-bottom:10px;align-items:flex-start}
-.action-num{width:22px;height:22px;border-radius:50%;background:#c9a96e;color:#000;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
-.error-box{background:#2e1a1a;border:1px solid #5c2020;border-radius:8px;padding:10px 14px;color:#f87171;font-size:12px;font-family:monospace;margin-top:10px}
-.hidden{display:none}
-.copy-all-btn{padding:9px 18px;background:transparent;border:1px solid #1e1c28;color:#6b6480;border-radius:7px;font-size:12px;width:100%;margin-top:4px}
-.copy-all-btn.copied{color:#4ade80;border-color:#4ade80}
+.copy-value{flex:1;font-size:13px;color:#1a1a1a;line-height:1.7;background:#faf9f7;border-radius:7px;padding:10px 13px;border:1px solid #e8e5de}
+.copy-btn{background:#fff;border:1px solid #e0ddd6;color:#888;border-radius:7px;padding:8px 12px;font-size:12px;flex-shrink:0;cursor:pointer;font-family:inherit;min-width:38px;transition:all 0.15s}
+.copy-btn:hover{border-color:#c9a050;color:#c9a050}
+.copy-btn.copied{border-color:#22c55e;color:#16a34a;background:#f0fdf4}
+.copy-all-btn{width:100%;padding:10px;background:#fff;border:1.5px solid #e0ddd6;color:#888;border-radius:8px;font-size:12px;cursor:pointer;font-family:inherit;font-weight:500;margin-top:6px;transition:all 0.15s}
+.copy-all-btn:hover{border-color:#c9a050;color:#c9a050}
+.copy-all-btn.copied{border-color:#22c55e;color:#16a34a;background:#f0fdf4}
+
+/* Tags */
+.tag{display:inline-block;padding:4px 11px;border-radius:20px;font-size:11px;background:#fdf8ef;border:1px solid #e8d8a0;color:#8a6b20;margin:2px 3px 2px 0;font-weight:500}
+
+/* Insight boxes */
+.insight{border-radius:10px;padding:14px 16px;margin-bottom:12px;line-height:1.8;font-size:13px;color:#555}
+.insight-blue{background:#eff6ff;border:1px solid #bfdbfe}
+.insight-gold{background:#fdf8ef;border:1px solid #e8d8a0}
+.insight-grey{background:#faf9f7;border:1px solid #e8e5de}
+
+/* Action steps */
+.action-row{display:flex;gap:12px;margin-bottom:12px;align-items:flex-start}
+.action-num{width:24px;height:24px;border-radius:50%;background:#c9a050;color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+
+/* Error */
+.error-box{background:#fef2f2;border:1px solid #fca5a5;border-radius:8px;padding:10px 14px;color:#dc2626;font-size:12px;margin-top:10px}
+.hidden{display:none!important}
+
+/* Video info banner */
+.video-info{background:#fdf8ef;border:1px solid #e8d8a0;border-radius:8px;padding:10px 14px;font-size:12px;color:#8a6b20;line-height:1.7;margin-bottom:10px}
+
+/* Divider */
+.divider{height:1px;background:#e8e5de;margin:14px 0}
 </style>
 </head>
 <body>
 
 <div class="header">
   <div>
-    <div class="header-sub">META AD STUDIO · AI VIDEO + IMAGE EDITOR</div>
-    <div class="header-title">Marta Mescar <span style="color:#2a2a2a;font-weight:400;font-size:13px">/ martamescar.com</span></div>
+    <div class="logo-sub">Meta Ad Studio · AI Video + Image Editor</div>
+    <div class="logo">Marta Mescar <span>/ martamescar.com</span></div>
   </div>
-  <button class="btn-ghost" id="resetBtn" style="width:auto;padding:7px 16px" onclick="resetApp()">↺ New</button>
+  <button class="btn btn-ghost" style="width:auto" onclick="resetApp()">↺ New</button>
 </div>
 
 <div class="body">
 
-  <!-- UPLOAD STAGE -->
+  <!-- UPLOAD -->
   <div id="uploadStage">
-    <div class="grid">
+    <div class="two-col">
       <div>
-        <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
+        <div class="drop-zone" id="dropZone"
+          onclick="document.getElementById('fileInput').click()"
+          ondrop="onDrop(event)" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')">
           <div class="drop-placeholder" id="dropPlaceholder">
-            <div class="icon">⊕</div>
+            <div class="drop-icon">⊕</div>
             <p>Drop image or video here</p>
-            <small>JPG · PNG · MP4 · MOV</small>
+            <small>JPG · PNG · MP4 · MOV · up to 500MB</small>
           </div>
-          <video id="videoPreview" class="hidden" controls preload="auto"></video>
-          <img id="imagePreview" class="hidden" alt="Preview">
+          <video id="videoPreview" class="hidden" controls preload="auto" style="max-height:340px;width:100%"></video>
+          <img id="imagePreview" class="hidden" alt="Preview" style="max-height:340px;width:100%;object-fit:contain">
         </div>
-        <input type="file" id="fileInput" accept="image/*,video/*">
-        <button class="btn-ghost" id="changeFileBtn" onclick="document.getElementById('fileInput').click()" style="display:none;margin-bottom:10px">↑ Change file</button>
+        <input type="file" id="fileInput" accept="image/*,video/*" style="display:none">
+
+        <button class="btn btn-ghost" id="changeBtn" style="display:none;margin-bottom:10px" onclick="document.getElementById('fileInput').click()">↑ Change file</button>
+
         <div id="captureSection" class="hidden">
-          <button class="btn-capture" id="captureBtn" onclick="captureFrame()">⬛ Pause video + Capture Frame</button>
+          <div class="video-info">Play the video, pause on the best frame for your ad, then capture it. Claude will use this frame to determine all edit parameters.</div>
+          <button class="btn-capture" id="captureBtn" onclick="captureFrame()">⬛  Pause video + Capture Frame</button>
         </div>
+
         <div id="errorBox" class="error-box hidden"></div>
       </div>
 
       <div>
         <div class="card">
-          <span class="lbl">FORMAT</span>
-          <div class="fmt-row" id="fmtRow">
-            <button class="fmt-btn active" data-fmt='{"id":"feed","label":"Feed 1:1","w":1080,"h":1080}' onclick="selectFmt(this)">Feed 1:1</button>
-            <button class="fmt-btn" data-fmt='{"id":"portrait","label":"Feed 4:5","w":1080,"h":1350}' onclick="selectFmt(this)">Feed 4:5</button>
-            <button class="fmt-btn" data-fmt='{"id":"story","label":"Story/Reel 9:16","w":1080,"h":1920}' onclick="selectFmt(this)">Story/Reel 9:16</button>
-            <button class="fmt-btn" data-fmt='{"id":"landscape","label":"Landscape 1.91:1","w":1200,"h":628}' onclick="selectFmt(this)">Landscape 1.91:1</button>
+          <span class="section-label">Ad Format</span>
+          <div class="pill-row">
+            <button class="pill active" data-fmt='{"id":"feed","label":"Feed 1:1","w":1080,"h":1080}' onclick="selFmt(this)">Feed 1:1</button>
+            <button class="pill" data-fmt='{"id":"portrait","label":"Feed 4:5","w":1080,"h":1350}' onclick="selFmt(this)">Feed 4:5</button>
+            <button class="pill" data-fmt='{"id":"story","label":"Story / Reel 9:16","w":1080,"h":1920}' onclick="selFmt(this)">Story / Reel 9:16</button>
+            <button class="pill" data-fmt='{"id":"landscape","label":"Landscape 1.91:1","w":1200,"h":628}' onclick="selFmt(this)">Landscape 1.91:1</button>
           </div>
         </div>
+
         <div class="card">
-          <span class="lbl">OBJECTIVE</span>
-          <div class="obj-row">
-            <button class="obj-btn active" data-obj="OUTCOME_SALES" onclick="selectObj(this)"><div style="font-size:18px;margin-bottom:3px">💰</div>Sales</button>
-            <button class="obj-btn" data-obj="OUTCOME_TRAFFIC" onclick="selectObj(this)"><div style="font-size:18px;margin-bottom:3px">🔗</div>Traffic</button>
-            <button class="obj-btn" data-obj="OUTCOME_AWARENESS" onclick="selectObj(this)"><div style="font-size:18px;margin-bottom:3px">📡</div>Awareness</button>
+          <span class="section-label">Campaign Objective</span>
+          <div class="pill-row">
+            <button class="obj-btn active" data-obj="OUTCOME_SALES" onclick="selObj(this)"><span class="obj-icon">💰</span>Sales</button>
+            <button class="obj-btn" data-obj="OUTCOME_TRAFFIC" onclick="selObj(this)"><span class="obj-icon">🔗</span>Traffic</button>
+            <button class="obj-btn" data-obj="OUTCOME_AWARENESS" onclick="selObj(this)"><span class="obj-icon">📡</span>Awareness</button>
           </div>
         </div>
+
         <div class="card">
-          <span class="lbl">ARTWORK DETAILS</span>
-          <textarea id="productInfo" rows="4" placeholder="Title, medium, size, price…&#10;&#10;E.g: 'Mediterranean Morning' — oil on linen, 80×100cm, €2,400. Only 1 available."></textarea>
+          <span class="section-label">Artwork Details</span>
+          <textarea id="productInfo" rows="5" placeholder="Title, medium, dimensions, price, story, what makes it unique.&#10;&#10;E.g: 'Mediterranean Morning' — original oil on linen, 80×100cm, €2,400. Painted in Alicante. Only 1 available."></textarea>
         </div>
-        <button class="btn-primary" id="generateBtn" onclick="generate()" disabled>Upload content first</button>
+
+        <button class="btn btn-primary" id="genBtn" onclick="generate()" disabled>Upload content first</button>
       </div>
     </div>
   </div>
 
-  <!-- WORKING STAGE -->
+  <!-- WORKING -->
   <div id="workingStage" class="hidden">
     <div class="spinner-wrap">
       <div class="spinner"></div>
-      <div class="step-text" id="stepText">Processing...</div>
-      <div class="progress-bar-wrap hidden" id="progressWrap">
+      <div class="step-text" id="stepText">Preparing...</div>
+      <div class="progress-wrap hidden" id="progressWrap">
         <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
-        <div style="font-size:11px;color:#c9a96e;font-family:monospace;margin-top:6px" id="progressText"></div>
+        <div class="progress-pct" id="progressPct"></div>
       </div>
       <div class="step-sub">Applying conversion science · competitor analysis · neuromarketing</div>
     </div>
   </div>
 
-  <!-- DONE STAGE -->
+  <!-- DONE -->
   <div id="doneStage" class="hidden">
     <div class="result-grid">
+
+      <!-- Left: output -->
       <div>
-        <div class="output-toggle" id="outputToggle" style="display:none">
-          <button class="toggle-btn active-video" onclick="showOutput('video')">🎬 Edited Video</button>
-          <button class="toggle-btn" onclick="showOutput('image')">🖼 Image Creative</button>
+        <div class="output-toggle" id="outToggle" style="display:none">
+          <button class="tog-btn tv" onclick="showOut('video')">🎬 Edited Video</button>
+          <button class="tog-btn" onclick="showOut('image')">🖼 Image Creative</button>
         </div>
-        <div class="output-preview" id="outputPreview"></div>
-        <a id="downloadVideo" class="btn-download-video hidden" download="martamescar_ad.mp4">↓ Download MP4 — Upload to Meta</a>
-        <button id="downloadImage" class="btn-download-image hidden" onclick="downloadImage()">↓ Download JPG — Upload to Meta</button>
-        <button class="btn-ghost" style="margin-bottom:6px" onclick="generate()">↺ Regenerate</button>
-        <button class="btn-ghost" onclick="resetApp()">+ New</button>
-        <div id="resultError" class="error-box hidden"></div>
+        <div class="output-preview" id="outPreview"></div>
+        <a id="dlVideo" class="btn-download-video hidden" download="martamescar_ad.mp4">↓  Download MP4 — Upload to Meta</a>
+        <button id="dlImage" class="btn-download-image hidden" onclick="dlImg()">↓  Download JPG — Upload to Meta</button>
+        <button class="btn btn-ghost" onclick="generate()">↺  Regenerate</button>
+        <button class="btn btn-ghost" onclick="resetApp()">+  New</button>
+        <div id="resultErr" class="error-box hidden"></div>
       </div>
 
+      <!-- Right: tabs -->
       <div>
         <div class="tabs">
           <button class="tab-btn active" onclick="showTab(this,'creative')">Creative</button>
@@ -175,23 +241,11 @@ textarea,input[type=text]{width:100%;background:#1a1825;border:1px solid #1e1c28
           <button class="tab-btn" onclick="showTab(this,'campaign')">Campaign</button>
           <button class="tab-btn" onclick="showTab(this,'insights')">Insights</button>
         </div>
-
-        <div id="tab-creative">
-          <div class="stat-grid" id="statGrid"></div>
-          <div id="editNotes"></div>
-        </div>
-        <div id="tab-copy" class="hidden">
-          <div id="copyFields"></div>
-        </div>
-        <div id="tab-audience" class="hidden">
-          <div id="audienceContent"></div>
-        </div>
-        <div id="tab-campaign" class="hidden">
-          <div id="campaignContent"></div>
-        </div>
-        <div id="tab-insights" class="hidden">
-          <div id="insightsContent"></div>
-        </div>
+        <div id="tab-creative"></div>
+        <div id="tab-copy" class="hidden"></div>
+        <div id="tab-audience" class="hidden"></div>
+        <div id="tab-campaign" class="hidden"></div>
+        <div id="tab-insights" class="hidden"></div>
       </div>
     </div>
   </div>
@@ -199,381 +253,290 @@ textarea,input[type=text]{width:100%;background:#1a1825;border:1px solid #1e1c28
 </div>
 
 <script>
-let state = {
-  file: null, isVideo: false, preview: null,
-  fmt: {id:"feed",label:"Feed 1:1",w:1080,h:1080},
-  obj: "OUTCOME_SALES",
-  captured: false,
-  capturedBlob: null,
-  result: null,
-  imageBlob: null,
-  videoUrl: null,
-  activeOutput: "image"
+const S = {
+  file:null, isVideo:false, fmt:{id:"feed",label:"Feed 1:1",w:1080,h:1080},
+  obj:"OUTCOME_SALES", capturedBlob:null, result:null,
+  imageBlob:null, videoUrl:null, activeOut:"image"
 };
 
-// File handling
-document.getElementById("fileInput").addEventListener("change", e => loadFile(e.target.files[0]));
-document.getElementById("dropZone").addEventListener("dragover", e => e.preventDefault());
-document.getElementById("dropZone").addEventListener("drop", e => { e.preventDefault(); loadFile(e.dataTransfer.files[0]); });
+document.getElementById("fileInput").addEventListener("change", e=>loadFile(e.target.files[0]));
+function onDrop(e){ e.preventDefault(); document.getElementById("dropZone").classList.remove("drag"); loadFile(e.dataTransfer.files[0]); }
 
-function loadFile(f) {
-  if (!f) return;
-  state.file = f;
-  state.isVideo = f.type.startsWith("video/");
-  state.captured = false; state.capturedBlob = null;
-  state.result = null; state.imageBlob = null; state.videoUrl = null;
-  showError("");
-
-  const dz = document.getElementById("dropZone");
-  dz.classList.add("has-file");
+function loadFile(f){
+  if(!f) return;
+  S.file=f; S.isVideo=f.type.startsWith("video/");
+  S.capturedBlob=null; S.result=null; S.imageBlob=null; S.videoUrl=null;
+  showErr(""); showErr2("");
+  const dz=document.getElementById("dropZone"); dz.classList.add("has-file");
   document.getElementById("dropPlaceholder").classList.add("hidden");
-  document.getElementById("changeFileBtn").style.display = "block";
-
-  if (state.isVideo) {
-    const vid = document.getElementById("videoPreview");
-    vid.src = URL.createObjectURL(f);
-    vid.classList.remove("hidden");
+  document.getElementById("changeBtn").style.display="block";
+  if(S.isVideo){
+    const v=document.getElementById("videoPreview"); v.src=URL.createObjectURL(f); v.classList.remove("hidden");
     document.getElementById("imagePreview").classList.add("hidden");
     document.getElementById("captureSection").classList.remove("hidden");
-    document.getElementById("generateBtn").textContent = "Capture a frame first →";
-    document.getElementById("generateBtn").disabled = true;
+    setGenBtn(false,"Capture a frame first →");
   } else {
-    const img = document.getElementById("imagePreview");
-    img.src = URL.createObjectURL(f);
-    img.classList.remove("hidden");
+    const img=document.getElementById("imagePreview"); img.src=URL.createObjectURL(f); img.classList.remove("hidden");
     document.getElementById("videoPreview").classList.add("hidden");
     document.getElementById("captureSection").classList.add("hidden");
-    document.getElementById("generateBtn").textContent = "→  Generate Everything";
-    document.getElementById("generateBtn").disabled = false;
+    setGenBtn(true,"→  Generate Everything");
   }
 }
 
-function captureFrame() {
-  const vid = document.getElementById("videoPreview");
-  if (!vid.videoWidth) { showError("Video not ready — wait for it to load then try again"); return; }
-  const c = document.createElement("canvas");
-  c.width = vid.videoWidth; c.height = vid.videoHeight;
-  c.getContext("2d").drawImage(vid, 0, 0);
-  c.toBlob(blob => {
-    if (!blob) { showError("Frame capture failed — try again"); return; }
-    state.capturedBlob = blob;
-    state.captured = true;
-    const btn = document.getElementById("captureBtn");
-    btn.textContent = "✓ Frame Captured — tap to recapture";
-    btn.classList.add("captured");
-    document.getElementById("generateBtn").textContent = "→  Generate Everything";
-    document.getElementById("generateBtn").disabled = false;
-  }, "image/jpeg", 0.92);
+function captureFrame(){
+  const v=document.getElementById("videoPreview");
+  if(!v.videoWidth){ showErr("Video not ready — wait for it to load fully then try again"); return; }
+  const c=document.createElement("canvas"); c.width=v.videoWidth; c.height=v.videoHeight;
+  c.getContext("2d").drawImage(v,0,0);
+  c.toBlob(blob=>{
+    if(!blob){ showErr("Frame capture failed — try again"); return; }
+    S.capturedBlob=blob;
+    const btn=document.getElementById("captureBtn");
+    btn.textContent="✓  Frame Captured — tap to recapture"; btn.classList.add("captured");
+    setGenBtn(true,"→  Generate Everything");
+  },"image/jpeg",0.92);
 }
 
-function selectFmt(btn) {
-  document.querySelectorAll(".fmt-btn").forEach(b => b.classList.remove("active"));
-  btn.classList.add("active");
-  state.fmt = JSON.parse(btn.dataset.fmt);
+function setGenBtn(enabled,txt){ const b=document.getElementById("genBtn"); b.disabled=!enabled; b.textContent=txt; }
+function selFmt(btn){ document.querySelectorAll(".pill").forEach(b=>b.classList.remove("active")); btn.classList.add("active"); S.fmt=JSON.parse(btn.dataset.fmt); }
+function selObj(btn){ document.querySelectorAll(".obj-btn").forEach(b=>b.classList.remove("active")); btn.classList.add("active"); S.obj=btn.dataset.obj; }
+function showErr(m){ const e=document.getElementById("errorBox"); e.textContent=m; m?e.classList.remove("hidden"):e.classList.add("hidden"); }
+function showErr2(m){ const e=document.getElementById("resultErr"); if(e){ e.textContent=m; m?e.classList.remove("hidden"):e.classList.add("hidden"); } }
+function setStage(s){ ["upload","working","done"].forEach(id=>document.getElementById(id+"Stage").classList.add("hidden")); document.getElementById(s+"Stage").classList.remove("hidden"); }
+function setStep(txt,pct){
+  document.getElementById("stepText").textContent=txt;
+  const pw=document.getElementById("progressWrap");
+  if(pct!==undefined){ pw.classList.remove("hidden"); document.getElementById("progressFill").style.width=pct+"%"; document.getElementById("progressPct").textContent=pct+"%"; }
+  else pw.classList.add("hidden");
 }
 
-function selectObj(btn) {
-  document.querySelectorAll(".obj-btn").forEach(b => b.classList.remove("active"));
-  btn.classList.add("active");
-  state.obj = btn.dataset.obj;
-}
-
-function showError(msg) {
-  const el = document.getElementById("errorBox");
-  if (msg) { el.textContent = "✗ " + msg; el.classList.remove("hidden"); }
-  else el.classList.add("hidden");
-}
-
-function setStage(s) {
-  ["uploadStage","workingStage","doneStage"].forEach(id => document.getElementById(id).classList.add("hidden"));
-  document.getElementById(s + "Stage").classList.remove("hidden");
-}
-
-function setStep(txt, pct) {
-  document.getElementById("stepText").textContent = txt;
-  if (pct !== undefined) {
-    document.getElementById("progressWrap").classList.remove("hidden");
-    document.getElementById("progressFill").style.width = pct + "%";
-    document.getElementById("progressText").textContent = pct + "%";
-  } else {
-    document.getElementById("progressWrap").classList.add("hidden");
-  }
-}
-
-async function generate() {
-  if (!state.file) return;
-  setStage("working");
-  showError("");
-
+async function generate(){
+  if(!S.file) return;
+  setStage("working"); showErr(""); showErr2("");
   try {
-    // 1. Get frame for analysis
-    setStep("Preparing content for analysis...");
-    let frameBlob = state.isVideo ? state.capturedBlob : state.file;
+    setStep("Preparing content...");
+    const frameBlob = S.isVideo ? S.capturedBlob : S.file;
 
-    // 2. Claude analysis
-    setStep("Claude is analysing content with conversion science and competitor data...");
-    const fd1 = new FormData();
-    fd1.append("frame", frameBlob, "frame.jpg");
-    fd1.append("format", JSON.stringify(state.fmt));
-    fd1.append("objective", state.obj);
-    fd1.append("productInfo", document.getElementById("productInfo").value);
+    setStep("Claude is analysing with conversion science and competitor data...");
+    const fd1=new FormData();
+    fd1.append("frame",frameBlob,"frame.jpg");
+    fd1.append("format",JSON.stringify(S.fmt));
+    fd1.append("objective",S.obj);
+    fd1.append("productInfo",document.getElementById("productInfo").value);
+    const r1=await fetch("/api/analyse",{method:"POST",body:fd1});
+    if(!r1.ok) throw new Error("Analysis failed: "+(await r1.text()));
+    S.result=await r1.json();
 
-    const r1 = await fetch("/api/analyse", { method: "POST", body: fd1 });
-    if (!r1.ok) throw new Error("Analysis failed: " + await r1.text());
-    state.result = await r1.json();
+    setStep("Applying AI edits to image creative...");
+    const fd2=new FormData();
+    fd2.append("image",frameBlob,"image.jpg");
+    fd2.append("params",JSON.stringify(S.result));
+    fd2.append("format",JSON.stringify(S.fmt));
+    const r2=await fetch("/api/process-image",{method:"POST",body:fd2});
+    if(!r2.ok) throw new Error("Image processing failed");
+    S.imageBlob=await r2.blob();
 
-    // 3. Process image
-    setStep("Applying AI edits — colour grade, warmth, overlays, typography...");
-    const fd2 = new FormData();
-    fd2.append("image", frameBlob, "image.jpg");
-    fd2.append("params", JSON.stringify(state.result));
-    fd2.append("format", JSON.stringify(state.fmt));
-
-    const r2 = await fetch("/api/process-image", { method: "POST", body: fd2 });
-    if (!r2.ok) throw new Error("Image processing failed");
-    state.imageBlob = await r2.blob();
-
-    // 4. Process video if applicable
-    if (state.isVideo) {
-      setStep("Processing video with FFmpeg...", 0);
-      const fd3 = new FormData();
-      fd3.append("video", state.file, "video.mp4");
-      fd3.append("params", JSON.stringify(state.result));
-      fd3.append("format", JSON.stringify(state.fmt));
-
-      const xhr = new XMLHttpRequest();
-      xhr.open("POST", "/api/process-video");
-      xhr.responseType = "blob";
-
-      const videoBlob = await new Promise((res, rej) => {
-        xhr.upload.onprogress = e => {
-          if (e.lengthComputable) {
-            const pct = Math.round(e.loaded / e.total * 50);
-            setStep(`Uploading video for processing... ${pct}%`, pct);
-          }
-        };
-        xhr.onprogress = e => setStep("Processing video with FFmpeg...", 75);
-        xhr.onload = () => {
-          if (xhr.status === 200) res(xhr.response);
-          else rej(new Error("Video processing failed"));
-        };
-        xhr.onerror = () => rej(new Error("Network error"));
+    if(S.isVideo){
+      setStep("Processing video with FFmpeg...",0);
+      const fd3=new FormData();
+      fd3.append("video",S.file,"video.mp4");
+      fd3.append("params",JSON.stringify(S.result));
+      fd3.append("format",JSON.stringify(S.fmt));
+      const videoBlob=await new Promise((res,rej)=>{
+        const xhr=new XMLHttpRequest();
+        xhr.open("POST","/api/process-video");
+        xhr.responseType="blob";
+        xhr.upload.onprogress=e=>{ if(e.lengthComputable) setStep("Uploading video...",Math.round(e.loaded/e.total*50)); };
+        xhr.onprogress=()=>setStep("Processing with FFmpeg — colour grade, warmth, overlays, fades...",75);
+        xhr.onload=()=>{ if(xhr.status===200) res(xhr.response); else rej(new Error("Video processing failed")); };
+        xhr.onerror=()=>rej(new Error("Network error"));
         xhr.send(fd3);
       });
-
-      state.videoUrl = URL.createObjectURL(videoBlob);
-      state.activeOutput = "video";
+      S.videoUrl=URL.createObjectURL(videoBlob);
+      S.activeOut="video";
     } else {
-      state.activeOutput = "image";
+      S.activeOut="image";
     }
 
     renderResult();
     setStage("done");
-
-  } catch (e) {
+  } catch(e){
     console.error(e);
-    document.getElementById("errorBox").textContent = "✗ " + e.message;
-    document.getElementById("errorBox").classList.remove("hidden");
+    showErr(e.message);
     setStage("upload");
   }
 }
 
-function renderResult() {
-  const d = state.result;
-
-  // Output preview
-  const preview = document.getElementById("outputPreview");
-  const toggle = document.getElementById("outputToggle");
-
-  if (state.isVideo && state.videoUrl) {
-    toggle.style.display = "flex";
-    showOutput("video");
-  } else {
-    toggle.style.display = "none";
-    showOutput("image");
-  }
+function renderResult(){
+  const d=S.result;
+  // Toggle
+  const tog=document.getElementById("outToggle");
+  tog.style.display=(S.isVideo&&S.videoUrl)?"flex":"none";
+  showOut(S.activeOut);
 
   // Creative tab
-  const cg = d.colorGrade || {};
-  const statData = [
-    ["CROP", `X:${Math.round((d.crop?.focusX||0.5)*100)}% Y:${Math.round((d.crop?.focusY||0.38)*100)}%`],
-    ["BRIGHTNESS", `${cg.brightness>=0?"+":""}${cg.brightness||0}`],
-    ["CONTRAST",   `${cg.contrast>=0?"+":""}${cg.contrast||0}`],
-    ["SATURATION", `${cg.saturation>=0?"+":""}${cg.saturation||0}`],
-    ["WARMTH",     `${cg.warmth>=0?"+":""}${cg.warmth||0}`],
-    ["OVERLAY",    (d.overlay?.style||"none").replace(/_/g," ")],
-    ["TEXT POS.",  d.headline?.position||"bottom"],
-    ["FONT",       d.headline?.style||"serif"],
-    ["HOOK",       d.hook?.text||"—"],
+  const cg=d.colorGrade||{};
+  const vid=d.video||{};
+  const stats=[
+    ["Crop",`X:${Math.round((d.crop?.focusX||0.5)*100)}% Y:${Math.round((d.crop?.focusY||0.38)*100)}%`],
+    ["Brightness",`${cg.brightness>=0?"+":""}${cg.brightness||0}`],
+    ["Contrast",`${cg.contrast>=0?"+":""}${cg.contrast||0}`],
+    ["Saturation",`${cg.saturation>=0?"+":""}${cg.saturation||0}`],
+    ["Warmth",`${cg.warmth>=0?"+":""}${cg.warmth||0}`],
+    ["Overlay",(d.overlay?.style||"none").replace(/_/g," ")],
+    ["Text pos.",d.headline?.position||"bottom"],
+    ["Font",d.headline?.style||"serif"],
+    ["Hook",d.hook?.text||"—"],
+    ...(S.isVideo?[["Trim to",`${vid.trimTo||30}s`],["Fade in",`${vid.fadeInDuration||0.4}s`],["End card",vid.endCardText||"—"]]:[] ),
   ];
-  document.getElementById("statGrid").innerHTML = statData.map(([l,v]) => `<div class="stat-box"><div class="stat-label">${l}</div><div class="stat-value">${v}</div></div>`).join("");
-  let notes = "";
-  if (d.colorGrade?.note) notes += `<div class="insight-dark" style="padding:11px 14px;border-radius:8px;font-size:12px;color:#6b6480;line-height:1.8;margin-bottom:8px"><strong style="color:#e8e4f0">Colour grade:</strong> ${d.colorGrade.note}</div>`;
-  if (d.hook?.note) notes += `<div class="insight-dark" style="padding:11px 14px;border-radius:8px;font-size:12px;color:#6b6480;line-height:1.8"><strong style="color:#e8e4f0">Hook:</strong> ${d.hook.note}</div>`;
-  document.getElementById("editNotes").innerHTML = notes;
+  document.getElementById("tab-creative").innerHTML=`
+    <div class="three-col" style="margin-bottom:12px">${stats.map(([l,v])=>`<div class="stat-box"><div class="stat-label">${l}</div><div class="stat-value">${v}</div></div>`).join("")}</div>
+    ${cg.note?`<div class="insight insight-grey" style="font-size:12px"><strong>Colour grade:</strong> ${cg.note}</div>`:""}
+    ${d.hook?.note?`<div class="insight insight-grey" style="font-size:12px"><strong>Hook:</strong> ${d.hook.note}</div>`:""}
+    ${S.isVideo&&vid.paceNote?`<div class="insight insight-gold" style="font-size:12px"><strong>Video pacing:</strong> ${vid.paceNote}</div>`:""}
+  `;
 
   // Copy tab
-  const cp = d.adCopy || {};
-  document.getElementById("copyFields").innerHTML = [
-    ["PRIMARY TEXT A — EMOTIONAL (≤125)", cp.primaryText, "pt"],
-    ["HEADLINE (≤40)", cp.headline, "hl"],
-    ["DESCRIPTION (≤30)", cp.description, "desc"],
-    ["CTA BUTTON", (cp.cta||"").replace(/_/g," "), "cta"],
-    ["VARIANT B — SOCIAL PROOF", cp.variantB, "vb"],
-    ["VARIANT C — SCARCITY / URGENCY", cp.variantC, "vc"],
-  ].map(([l,v,k]) => `
-    <div class="copy-field">
-      <span class="lbl">${l}</span>
-      <div class="copy-row">
-        <div class="copy-value">${v||""}</div>
-        <button class="copy-btn" id="cpbtn-${k}" onclick="copyText('${(v||"").replace(/'/g,"\\'")}','${k}')">&xcopy;</button>
-      </div>
-    </div>
-  `).join("") + `<button class="copy-all-btn" id="copyAllBtn" onclick="copyAll()">⎘ Copy all copy</button>`;
+  const cp=d.adCopy||{};
+  document.getElementById("tab-copy").innerHTML=`
+    ${[["Primary Text A — Emotional (≤125)",cp.primaryText,"pt"],["Headline (≤40)",cp.headline,"hl"],["Description (≤30)",cp.description,"desc"],["CTA Button",(cp.cta||"").replace(/_/g," "),"cta"],["Variant B — Social Proof",cp.variantB,"vb"],["Variant C — Scarcity / Urgency",cp.variantC,"vc"]].map(([l,v,k])=>`
+      <div class="copy-field">
+        <span class="section-label">${l}</span>
+        <div class="copy-row">
+          <div class="copy-value">${v||""}</div>
+          <button class="copy-btn" id="cb-${k}" onclick="cpText('${(v||"").replace(/'/g,"\\'").replace(/\n/g," ")}','${k}')" title="Copy">⎘</button>
+        </div>
+      </div>`).join("")}
+    <button class="copy-all-btn" id="caBtn" onclick="cpAll()">⎘  Copy all copy</button>
+  `;
 
   // Audience tab
-  const au = d.audience || {};
-  document.getElementById("audienceContent").innerHTML = `
+  const au=d.audience||{};
+  document.getElementById("tab-audience").innerHTML=`
     <div class="card">
-      <div style="font-size:13px;color:#6b6480;line-height:1.8;margin-bottom:14px">${au.summary||""}</div>
-      <div class="stat-grid" style="grid-template-columns:1fr 1fr 1fr">
-        <div class="stat-box"><div class="stat-label">AGE</div><div class="stat-value">${au.ageRange||""}</div></div>
-        <div class="stat-box"><div class="stat-label">GENDER</div><div class="stat-value">${au.genders||""}</div></div>
-        <div class="stat-box"><div class="stat-label">REACH</div><div class="stat-value">${au.estimatedReach||""}</div></div>
+      <p style="font-size:13px;color:#555;line-height:1.8;margin-bottom:16px">${au.summary||""}</p>
+      <div class="three-col" style="margin-bottom:16px">
+        <div class="stat-box"><div class="stat-label">Age</div><div class="stat-value">${au.ageRange||""}</div></div>
+        <div class="stat-box"><div class="stat-label">Gender</div><div class="stat-value">${au.genders||""}</div></div>
+        <div class="stat-box"><div class="stat-label">Est. Reach</div><div class="stat-value">${au.estimatedReach||""}</div></div>
       </div>
-      <span class="lbl" style="margin-top:14px;display:block">LOCATIONS</span>
-      <div style="margin-bottom:12px">${(au.locations||[]).map(v=>`<span class="tag">${v}</span>`).join("")}</div>
-      <span class="lbl">INTEREST TARGETS</span>
-      <div style="margin-bottom:12px">${(au.interests||[]).map(v=>`<span class="tag">${v}</span>`).join("")}</div>
-      <span class="lbl">BEHAVIOURS</span>
-      <div style="margin-bottom:12px">${(au.behaviors||[]).map(v=>`<span class="tag">${v}</span>`).join("")}</div>
-      <span class="lbl">CUSTOM AUDIENCES</span>
-      <div style="margin-bottom:12px">${(au.customAudiences||[]).map(v=>`<span class="tag">${v}</span>`).join("")}</div>
-      <span class="lbl">LOOKALIKE</span>
-      <div style="font-size:13px;color:#e8e4f0;margin-bottom:12px">${au.lookalike||""}</div>
-      <span class="lbl">EXCLUSIONS</span>
+      ${[["Locations",au.locations],["Interest Targets",au.interests],["Behaviours",au.behaviors],["Custom Audiences",au.customAudiences]].map(([l,arr])=>`
+        <span class="section-label">${l}</span>
+        <div style="margin-bottom:14px">${(arr||[]).map(v=>`<span class="tag">${v}</span>`).join("")}</div>
+      `).join("")}
+      <span class="section-label">Lookalike Source</span>
+      <p style="font-size:13px;color:#333;margin-bottom:14px">${au.lookalike||""}</p>
+      <span class="section-label">Exclusions</span>
       <div>${(au.exclusions||[]).map(v=>`<span class="tag">${v}</span>`).join("")}</div>
     </div>
-    <div class="insight-gold" style="padding:12px 14px;border-radius:8px;margin-bottom:10px">
-      <span class="lbl">TARGETING RATIONALE</span>
-      <div style="font-size:12px;color:#6b6480;line-height:1.8">${au.whyThisAudience||""}</div>
+    <div class="insight insight-gold">
+      <span class="section-label">Targeting Rationale</span>
+      ${au.whyThisAudience||""}
     </div>
-    <button class="copy-all-btn" id="audCopyBtn" onclick="copyAudience()">⎘ Copy audience settings</button>
+    <button class="copy-all-btn" id="auBtn" onclick="cpAud()">⎘  Copy audience settings</button>
   `;
 
   // Campaign tab
-  const ca = d.campaign || {};
-  document.getElementById("campaignContent").innerHTML = `
+  const ca=d.campaign||{};
+  document.getElementById("tab-campaign").innerHTML=`
     <div class="card">
-      <div class="stat-grid" style="grid-template-columns:1fr 1fr">
-        <div class="stat-box"><div class="stat-label">DAILY BUDGET</div><div class="stat-value">${ca.budgetDaily||""}</div></div>
-        <div class="stat-box"><div class="stat-label">BID STRATEGY</div><div class="stat-value">${ca.bidStrategy||""}</div></div>
-        <div class="stat-box"><div class="stat-label">CTR TARGET</div><div class="stat-value">${ca.kpis?.ctr||""}</div></div>
-        <div class="stat-box"><div class="stat-label">CPC TARGET</div><div class="stat-value">${ca.kpis?.cpc||""}</div></div>
-        <div class="stat-box"><div class="stat-label">ROAS TARGET</div><div class="stat-value">${ca.kpis?.roas||""}</div></div>
+      <div class="two-col-stat" style="margin-bottom:16px">
+        ${[["Daily Budget",ca.budgetDaily],["Bid Strategy",ca.bidStrategy],["CTR Target",ca.kpis?.ctr],["CPC Target",ca.kpis?.cpc],["ROAS Target",ca.kpis?.roas]].map(([l,v])=>`<div class="stat-box"><div class="stat-label">${l}</div><div class="stat-value">${v||""}</div></div>`).join("")}
       </div>
-      <span class="lbl" style="margin-top:14px;display:block">PLACEMENTS</span>
-      <div style="font-size:13px;color:#e8e4f0;line-height:1.6;margin-bottom:12px">${ca.placements||""}</div>
-      <span class="lbl">BEST SCHEDULE</span>
-      <div style="font-size:13px;color:#e8e4f0;line-height:1.6;margin-bottom:12px">${ca.schedule||""}</div>
-      <span class="lbl">A/B TEST FIRST</span>
-      <div style="font-size:13px;color:#e8e4f0;line-height:1.6">${ca.abTest||""}</div>
+      <span class="section-label">Placements</span><p style="font-size:13px;color:#333;line-height:1.6;margin-bottom:14px">${ca.placements||""}</p>
+      <span class="section-label">Best Schedule</span><p style="font-size:13px;color:#333;line-height:1.6;margin-bottom:14px">${ca.schedule||""}</p>
+      <span class="section-label">A/B Test First</span><p style="font-size:13px;color:#333;line-height:1.6">${ca.abTest||""}</p>
     </div>
     <div class="card">
-      <span class="lbl">WEEK 1 ACTIONS</span>
-      ${(ca.week1||[]).map((a,i)=>`<div class="action-row"><div class="action-num">${i+1}</div><div style="font-size:13px;color:#e8e4f0;line-height:1.6">${a}</div></div>`).join("")}
+      <span class="section-label">Week 1 Actions</span>
+      ${(ca.week1||[]).map((a,i)=>`<div class="action-row"><div class="action-num">${i+1}</div><div style="font-size:13px;color:#333;line-height:1.6">${a}</div></div>`).join("")}
     </div>
-    <button class="copy-all-btn" id="campCopyBtn" onclick="copyCampaign()">⎘ Copy campaign settings</button>
+    <button class="copy-all-btn" id="caBtn2" onclick="cpCamp()">⎘  Copy campaign settings</button>
   `;
 
   // Insights tab
-  document.getElementById("insightsContent").innerHTML = `
-    ${d.analysis?`<div class="insight-dark" style="padding:14px;border-radius:10px;margin-bottom:12px"><span class="lbl">CONTENT ANALYSIS</span><div style="font-size:13px;color:#6b6480;line-height:1.8">${d.analysis}</div></div>`:""}
-    ${d.conversionInsights?`<div class="insight-blue" style="padding:14px;border-radius:10px;margin-bottom:12px"><span class="lbl">CONVERSION SCIENCE · COMPETITOR DATA · PSYCHOLOGY</span><div style="font-size:13px;color:#6b6480;line-height:1.8">${d.conversionInsights}</div></div>`:""}
-    ${d.hook?.note?`<div class="insight-dark" style="padding:14px;border-radius:10px;margin-bottom:12px"><span class="lbl">HOOK PSYCHOLOGY</span><div style="font-size:13px;color:#6b6480;line-height:1.8">${d.hook.note}</div></div>`:""}
-    ${d.overlay?.note?`<div class="insight-dark" style="padding:14px;border-radius:10px;margin-bottom:12px"><span class="lbl">OVERLAY RATIONALE</span><div style="font-size:13px;color:#6b6480;line-height:1.8">${d.overlay.note}</div></div>`:""}
-    ${d.headline?.note?`<div class="insight-dark" style="padding:14px;border-radius:10px"><span class="lbl">TYPOGRAPHY PLACEMENT</span><div style="font-size:13px;color:#6b6480;line-height:1.8">${d.headline.note}</div></div>`:""}
+  document.getElementById("tab-insights").innerHTML=`
+    ${d.analysis?`<div class="insight insight-grey"><span class="section-label">Content Analysis</span>${d.analysis}</div>`:""}
+    ${d.conversionInsights?`<div class="insight insight-blue"><span class="section-label">Conversion Science · Competitor Data · Psychology</span>${d.conversionInsights}</div>`:""}
+    ${d.hook?.note?`<div class="insight insight-grey"><span class="section-label">Hook Psychology</span>${d.hook.note}</div>`:""}
+    ${d.overlay?.note?`<div class="insight insight-grey"><span class="section-label">Overlay Rationale</span>${d.overlay.note}</div>`:""}
+    ${d.headline?.note?`<div class="insight insight-grey"><span class="section-label">Typography Placement</span>${d.headline.note}</div>`:""}
   `;
 }
 
-function showOutput(type) {
-  state.activeOutput = type;
-  const preview = document.getElementById("outputPreview");
-  const dlV = document.getElementById("downloadVideo");
-  const dlI = document.getElementById("downloadImage");
-  document.querySelectorAll(".toggle-btn").forEach(b => { b.classList.remove("active-video","active-image"); });
-
-  if (type === "video" && state.videoUrl) {
-    preview.innerHTML = `<video src="${state.videoUrl}" controls></video>`;
-    dlV.href = state.videoUrl; dlV.classList.remove("hidden"); dlI.classList.add("hidden");
-    document.querySelectorAll(".toggle-btn")[0].classList.add("active-video");
+function showOut(type){
+  S.activeOut=type;
+  const p=document.getElementById("outPreview");
+  const dlV=document.getElementById("dlVideo");
+  const dlI=document.getElementById("dlImage");
+  document.querySelectorAll(".tog-btn").forEach(b=>{ b.classList.remove("tv","ti"); });
+  if(type==="video"&&S.videoUrl){
+    p.innerHTML=`<video src="${S.videoUrl}" controls></video>`;
+    dlV.href=S.videoUrl; dlV.classList.remove("hidden"); dlI.classList.add("hidden");
+    document.querySelectorAll(".tog-btn")[0].classList.add("tv");
   } else {
-    const url = state.imageBlob ? URL.createObjectURL(state.imageBlob) : "";
-    preview.innerHTML = `<img src="${url}" alt="Ad creative" id="outputImg">`;
+    const url=S.imageBlob?URL.createObjectURL(S.imageBlob):"";
+    p.innerHTML=`<img src="${url}" alt="Ad creative">`;
     dlV.classList.add("hidden"); dlI.classList.remove("hidden");
-    document.querySelectorAll(".toggle-btn")[1]?.classList.add("active-image");
+    document.querySelectorAll(".tog-btn")[1]?.classList.add("ti");
   }
 }
 
-function downloadImage() {
-  if (!state.imageBlob) return;
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(state.imageBlob);
-  a.download = `martamescar_${state.fmt.id}_ad.jpg`;
-  a.click();
+function dlImg(){ if(!S.imageBlob)return; const a=document.createElement("a"); a.href=URL.createObjectURL(S.imageBlob); a.download=`martamescar_${S.fmt.id}_ad.jpg`; a.click(); }
+
+function showTab(btn,id){
+  document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active")); btn.classList.add("active");
+  document.querySelectorAll("[id^='tab-']").forEach(el=>el.classList.add("hidden"));
+  document.getElementById("tab-"+id).classList.remove("hidden");
 }
 
-function showTab(btn, id) {
-  document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
-  btn.classList.add("active");
-  document.querySelectorAll("[id^='tab-']").forEach(el => el.classList.add("hidden"));
-  document.getElementById("tab-" + id).classList.remove("hidden");
+function cpText(text,key){
+  navigator.clipboard.writeText(text).catch(()=>{});
+  const b=document.getElementById("cb-"+key);
+  if(b){b.textContent="✓";b.classList.add("copied");setTimeout(()=>{b.textContent="⎘";b.classList.remove("copied");},2000);}
 }
 
-function copyText(text, key) {
-  navigator.clipboard.writeText(text).catch(() => {});
-  const btn = document.getElementById("cpbtn-" + key);
-  if (btn) { btn.textContent = "✓"; btn.classList.add("copied"); setTimeout(() => { btn.textContent = "⎘"; btn.classList.remove("copied"); }, 2000); }
+function cpAll(){
+  const c=S.result?.adCopy||{};
+  const txt=`A:\n${c.primaryText}\n\nHEADLINE: ${c.headline}\nDESCRIPTION: ${c.description}\nCTA: ${c.cta}\n\nB:\n${c.variantB}\n\nC:\n${c.variantC}`;
+  navigator.clipboard.writeText(txt).catch(()=>{});
+  markCopied("caBtn","⎘  Copy all copy");
 }
 
-function copyAll() {
-  const cp = state.result?.adCopy || {};
-  const txt = `A:\n${cp.primaryText}\n\nHEADLINE: ${cp.headline}\nDESCRIPTION: ${cp.description}\nCTA: ${cp.cta}\n\nB:\n${cp.variantB}\n\nC:\n${cp.variantC}`;
-  navigator.clipboard.writeText(txt).catch(() => {});
-  const btn = document.getElementById("copyAllBtn");
-  if (btn) { btn.textContent = "✓ Copied"; btn.classList.add("copied"); setTimeout(() => { btn.textContent = "⎘ Copy all copy"; btn.classList.remove("copied"); }, 2000); }
+function cpAud(){
+  const a=S.result?.audience||{};
+  const txt=`AUDIENCE\nAge: ${a.ageRange} | Gender: ${a.genders} | Reach: ${a.estimatedReach}\nLocations: ${(a.locations||[]).join(", ")}\nInterests: ${(a.interests||[]).join(", ")}\nBehaviours: ${(a.behaviors||[]).join(", ")}\nCustom: ${(a.customAudiences||[]).join(", ")}\nLookalike: ${a.lookalike}\nExclusions: ${(a.exclusions||[]).join(", ")}\n\n${a.whyThisAudience}`;
+  navigator.clipboard.writeText(txt).catch(()=>{});
+  markCopied("auBtn","⎘  Copy audience settings");
 }
 
-function copyAudience() {
-  const au = state.result?.audience || {};
-  const txt = `AUDIENCE\nAge: ${au.ageRange} | Gender: ${au.genders} | Reach: ${au.estimatedReach}\nLocations: ${(au.locations||[]).join(", ")}\nInterests: ${(au.interests||[]).join(", ")}\nBehaviours: ${(au.behaviors||[]).join(", ")}\nCustom: ${(au.customAudiences||[]).join(", ")}\nLookalike: ${au.lookalike}\nExclusions: ${(au.exclusions||[]).join(", ")}\n\n${au.whyThisAudience}`;
-  navigator.clipboard.writeText(txt).catch(() => {});
-  const btn = document.getElementById("audCopyBtn");
-  if (btn) { btn.textContent = "✓ Copied"; btn.classList.add("copied"); setTimeout(() => { btn.textContent = "⎘ Copy audience settings"; btn.classList.remove("copied"); }, 2000); }
+function cpCamp(){
+  const c=S.result?.campaign||{};
+  const txt=`CAMPAIGN\nBudget: ${c.budgetDaily} | Bid: ${c.bidStrategy}\nCTR: ${c.kpis?.ctr} | CPC: ${c.kpis?.cpc} | ROAS: ${c.kpis?.roas}\nPlacements: ${c.placements}\nSchedule: ${c.schedule}\nA/B: ${c.abTest}\n\nWEEK 1:\n${(c.week1||[]).map((a,i)=>`${i+1}. ${a}`).join("\n")}`;
+  navigator.clipboard.writeText(txt).catch(()=>{});
+  markCopied("caBtn2","⎘  Copy campaign settings");
 }
 
-function copyCampaign() {
-  const ca = state.result?.campaign || {};
-  const txt = `CAMPAIGN\nBudget: ${ca.budgetDaily} | Bid: ${ca.bidStrategy}\nCTR: ${ca.kpis?.ctr} | CPC: ${ca.kpis?.cpc} | ROAS: ${ca.kpis?.roas}\nPlacements: ${ca.placements}\nSchedule: ${ca.schedule}\nA/B: ${ca.abTest}\n\nWEEK 1:\n${(ca.week1||[]).map((a,i)=>`${i+1}. ${a}`).join("\n")}`;
-  navigator.clipboard.writeText(txt).catch(() => {});
-  const btn = document.getElementById("campCopyBtn");
-  if (btn) { btn.textContent = "✓ Copied"; btn.classList.add("copied"); setTimeout(() => { btn.textContent = "⎘ Copy campaign settings"; btn.classList.remove("copied"); }, 2000); }
+function markCopied(id,orig){
+  const b=document.getElementById(id);
+  if(!b)return;
+  b.textContent="✓  Copied"; b.classList.add("copied");
+  setTimeout(()=>{b.textContent=orig;b.classList.remove("copied");},2000);
 }
 
-function resetApp() {
-  state = { file:null, isVideo:false, preview:null, fmt:{id:"feed",label:"Feed 1:1",w:1080,h:1080}, obj:"OUTCOME_SALES", captured:false, capturedBlob:null, result:null, imageBlob:null, videoUrl:null, activeOutput:"image" };
+function resetApp(){
+  Object.assign(S,{file:null,isVideo:false,capturedBlob:null,result:null,imageBlob:null,videoUrl:null,activeOut:"image"});
   document.getElementById("dropZone").classList.remove("has-file");
   document.getElementById("dropPlaceholder").classList.remove("hidden");
   document.getElementById("videoPreview").classList.add("hidden");
   document.getElementById("imagePreview").classList.add("hidden");
   document.getElementById("captureSection").classList.add("hidden");
-  document.getElementById("changeFileBtn").style.display = "none";
-  document.getElementById("generateBtn").disabled = true;
-  document.getElementById("generateBtn").textContent = "Upload content first";
+  document.getElementById("changeBtn").style.display="none";
   document.getElementById("captureBtn").classList.remove("captured");
-  document.getElementById("captureBtn").textContent = "⬛ Pause video + Capture Frame";
-  document.getElementById("fileInput").value = "";
-  showError("");
+  document.getElementById("captureBtn").textContent="⬛  Pause video + Capture Frame";
+  document.getElementById("fileInput").value="";
+  setGenBtn(false,"Upload content first");
+  showErr(""); showErr2("");
   setStage("upload");
 }
 </script>
