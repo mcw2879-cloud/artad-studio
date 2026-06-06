@@ -127,35 +127,17 @@ app.post("/api/process-video", upload.single("video"), (req, res) => {
   try { params=JSON.parse(req.body.params); fmt=JSON.parse(req.body.format); }
   catch(e) { return res.status(400).json({ error: "Invalid params" }); }
 
-  const outputPath = `outputs/edited_${Date.now()}.mp4`;
+  const outputPath = `/tmp/edited_${Date.now()}.mp4`;
   const vid = params.video || {};
-  const trimTo   = Math.min(vid.trimTo||30, 35); // cap at 35s to limit memory
+  const trimTo   = Math.min(vid.trimTo||30, 35);
   const fadeIn   = vid.fadeInDuration||0.4;
   const fadeOut  = vid.fadeOutDuration||0.5;
   const cg       = params.colorGrade||{};
   const br       = ((cg.brightness||0)/100).toFixed(3);
   const con      = (1+(cg.contrast||0)/100).toFixed(3);
   const sat      = (1+(cg.saturation||0)/100).toFixed(3);
-  const wm       = cg.warmth||0;
   const { w, h } = fmt;
-  const pad      = Math.round(w*0.07);
-  const headFs   = Math.round(w*0.055); // slightly smaller for reliability
-  const subFs    = Math.round(headFs*0.52);
-  const hookFs   = Math.round(w*0.065);
-  const urlFs    = Math.round(w*0.026);
-  const endFs    = Math.round(w*0.048);
-  const headY    = h-pad-urlFs-14-subFs-12-headFs;
-  const subY     = h-pad-urlFs-14-subFs;
-  const urlY     = h-pad;
   const gradY    = Math.round(h*0.50);
-  const hookEnd  = vid.hookEndTime||3.2;
-  const tFadeIn  = vid.textFadeInTime||0.5;
-  const endOff   = vid.endCardStartOffset||3.5;
-
-  const hookText = safeText(params.hook?.text||"");
-  const headText = safeText(params.headline?.text||"");
-  const subText  = safeText(params.subtext?.text||"");
-  const endText  = safeText(vid.endCardText||"martamescar.com");
   const oa       = params.overlay?.opacity||0.52;
 
   console.log(`[Video] Starting: ${videoFile.path}, trim: ${trimTo}s, format: ${w}x${h}`);
@@ -167,21 +149,16 @@ app.post("/api/process-video", upload.single("video"), (req, res) => {
       return res.status(500).json({ error: "Could not read video: " + err.message });
     }
 
-    const duration = Math.min(meta.format.duration||30, trimTo);
-    const fadeOutStart = Math.max(0, duration-fadeOut);
+    const duration    = Math.min(meta.format.duration||30, trimTo);
+    const fadeOutStart = Math.max(0, duration - fadeOut);
 
-    // Build filter chain — kept minimal for Railway memory limits
+    // Minimal filter chain — only universally available FFmpeg filters
+    // drawtext and colorchannelmixer excluded (not in all static builds)
     const filters = [
       `scale=${w}:${h}:force_original_aspect_ratio=decrease`,
       `pad=${w}:${h}:(ow-iw)/2:(oh-ih)/2:black`,
       `eq=brightness=${br}:contrast=${con}:saturation=${sat}`,
-      ...(wm>0?[`colorchannelmixer=rr=${(1+wm/180).toFixed(3)}:bb=${(1-wm/220).toFixed(3)}`]:[]),
       `drawbox=x=0:y=${gradY}:w=iw:h=${h-gradY}:color=black@${oa.toFixed(2)}:t=fill`,
-      ...(hookText?[`drawtext=text='${hookText}':fontsize=${hookFs}:fontcolor=white:x=(w-text_w)/2:y=${Math.round(h*0.35)}:shadowcolor=black@0.8:shadowx=2:shadowy=2:enable='between(t\\,0\\,${hookEnd})'`]:[]),
-      ...(headText?[`drawtext=text='${headText}':fontsize=${headFs}:fontcolor=white:x=${pad}:y=${headY}:shadowcolor=black@0.7:shadowx=2:shadowy=2:enable='gt(t\\,${tFadeIn})'`]:[]),
-      ...(subText&&params.subtext?.show!==false?[`drawtext=text='${subText}':fontsize=${subFs}:fontcolor=#f5e6c8:x=${pad}:y=${subY}:shadowcolor=black@0.6:shadowx=1:shadowy=1:enable='gt(t\\,${tFadeIn})'`]:[]),
-      `drawtext=text='martamescar.com':fontsize=${urlFs}:fontcolor=white@0.65:x=${pad}:y=${urlY}:shadowcolor=black@0.5:shadowx=1:shadowy=1`,
-      ...(endText&&duration>endOff?[`drawtext=text='${endText}':fontsize=${endFs}:fontcolor=white:x=(w-text_w)/2:y=(h-text_h)/2:shadowcolor=black@0.85:shadowx=2:shadowy=2:enable='gte(t\\,${Math.max(0,duration-endOff)})'`]:[]),
       `fade=t=in:st=0:d=${fadeIn}`,
       `fade=t=out:st=${fadeOutStart}:d=${fadeOut}`,
     ].join(",");
@@ -220,8 +197,7 @@ app.post("/api/process-video", upload.single("video"), (req, res) => {
         res.download(outputPath, "martamescar_ad.mp4", () => {
           try{fs.unlinkSync(videoFile.path);}catch{}
           try{fs.unlinkSync(outputPath);}catch{}
-        });
-      })
+        });      })
       .on("error", err => {
         clearTimeout(timeout);
         if (killed) return;
