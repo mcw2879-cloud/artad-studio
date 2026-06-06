@@ -3,6 +3,7 @@ import cors from "cors";
 import multer from "multer";
 import ffmpeg from "fluent-ffmpeg";
 import ffmpegPath from "ffmpeg-static";
+import ffprobePath from "ffprobe-static";
 import Anthropic from "@anthropic-ai/sdk";
 import fs from "fs";
 import path from "path";
@@ -11,6 +12,7 @@ import "dotenv/config";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 ffmpeg.setFfmpegPath(ffmpegPath);
+ffmpeg.setFfprobePath(ffprobePath.path);
 
 const app = express();
 const PORT = process.env.PORT || 3000;
