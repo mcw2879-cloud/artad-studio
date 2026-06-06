@@ -188,6 +188,7 @@ textarea:focus,input[type=text]:focus{border-color:#c9a050;background:#fff}
             <button class="obj-btn active" data-obj="OUTCOME_SALES" onclick="selObj(this)"><span class="obj-icon">💰</span>Sales</button>
             <button class="obj-btn" data-obj="OUTCOME_TRAFFIC" onclick="selObj(this)"><span class="obj-icon">🔗</span>Traffic</button>
             <button class="obj-btn" data-obj="OUTCOME_AWARENESS" onclick="selObj(this)"><span class="obj-icon">📡</span>Awareness</button>
+            <button class="obj-btn" data-obj="OUTCOME_COMMISSION" onclick="selObj(this)"><span class="obj-icon">🎨</span>Commission</button>
           </div>
         </div>
 
@@ -383,9 +384,26 @@ async function generate(){
         const xhr=new XMLHttpRequest();
         xhr.open("POST","/api/process-video");
         xhr.responseType="blob";
-        xhr.upload.onprogress=e=>{ if(e.lengthComputable) setStep("Uploading video...",Math.round(e.loaded/e.total*50)); };
-        xhr.onprogress=()=>setStep("Processing with FFmpeg — colour grade, warmth, overlays, fades...",75);
-        xhr.onload=()=>{ if(xhr.status===200) res(xhr.response); else { xhr.responseType="text"; rej(new Error("Video processing failed — check Railway logs")); } };
+        let ffmpegTimer=null;
+        xhr.upload.onprogress=e=>{
+          if(e.lengthComputable) setStep("Uploading video...",Math.round(e.loaded/e.total*45));
+        };
+        xhr.upload.onload=()=>{
+          const start=Date.now();
+          ffmpegTimer=setInterval(()=>{
+            const sec=Math.round((Date.now()-start)/1000);
+            const pct=45+Math.min(50,Math.round(50*(1-Math.exp(-sec/70))));
+            const display=sec>=60?`${Math.floor(sec/60)}m ${sec%60}s`:`${sec}s`;
+            setStep(`Processing video with FFmpeg... ${display}`,pct);
+          },1000);
+        };
+        xhr.onload=()=>{
+          if(ffmpegTimer) clearInterval(ffmpegTimer);
+          setStep("Finalising...",98);
+          if(xhr.status===200) res(xhr.response);
+          else rej(new Error("Video processing failed — check Railway logs"));
+        };
+        xhr.onerror=()=>{ if(ffmpegTimer) clearInterval(ffmpegTimer); rej(new Error("Network error")); };
         xhr.onerror=()=>rej(new Error("Network error"));
         xhr.send(fd3);
       });
